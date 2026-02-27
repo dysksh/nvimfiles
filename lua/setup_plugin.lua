@@ -15,4 +15,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- lua/plugins/ ディレクトリ内のファイルからプラグインを自動読み込みする
-require('lazy').setup('plugins')
+require('lazy').setup('plugins', {
+  rocks = {
+    enabled = true,
+    hererocks = true,
+  },
+})
