@@ -26,7 +26,20 @@ return {
           prefix = '●',         -- 行末に表示するマーク
           spacing = 4,
         },
-        signs = true,           -- ガター（行番号横）にアイコン表示
+        signs = {               -- ガター（行番号横）にアイコン表示
+          text = {
+            [vim.diagnostic.severity.ERROR] = 'E ',
+            [vim.diagnostic.severity.WARN] = 'W ',
+            [vim.diagnostic.severity.HINT] = 'H ',
+            [vim.diagnostic.severity.INFO] = 'I ',
+          },
+          texthl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+          },
+        },
         float = {
           border = 'rounded',
           source = true,        -- エラーの発生元を表示
@@ -34,13 +47,6 @@ return {
         severity_sort = true,   -- 重要度順にソート
         update_in_insert = false,
       })
-
-      -- 診断アイコンの設定
-      local signs = { Error = 'E ', Warn = 'W ', Hint = 'H ', Info = 'I ' }
-      for type, icon in pairs(signs) do
-        local hl = 'DiagnosticSign' .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-      end
 
       cmp.setup({
         snippet = {
