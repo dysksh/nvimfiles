@@ -1,4 +1,5 @@
 require('basic_config')
+require('clipboard_config')
 require('setup_plugin')
 
 -- キーマッピング
