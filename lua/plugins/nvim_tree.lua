@@ -13,7 +13,11 @@ return {
         group_empty = true,
       },
       filters = {
-        dotfiles = true,
+        dotfiles = false,
+        exclude = { '.git', 'node_modules' },
+      },
+      git = {
+        ignore = false,
       },
     })
 
