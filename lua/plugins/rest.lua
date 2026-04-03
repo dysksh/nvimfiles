@@ -1,47 +1,42 @@
 return {
   {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    config = function()
-      require('nvim-treesitter').setup {
-        ensure_installed = { 'http', 'json' },
-      }
-    end,
-  },
-  {
-    'rest-nvim/rest.nvim',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-lua/plenary.nvim',
-      { 'nvim-neotest/nvim-nio', name = 'nvim-nio' },
-      { 'j-hui/fidget.nvim', opts = {} },
-    },
+    'mistweaverco/kulala.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
     ft = 'http',
-    config = function()
-      ---@type rest.Opts
-      vim.g.rest_nvim = {
-        request = {
-          skip_ssl_verification = true,
-        },
-        response = {
-          hooks = {
-            decode_url = true,
-            format = true,
-          },
-        },
-      }
+    opts = {
+      global_keymaps = false,
+      default_view = 'body',
+      additional_curl_options = { '--insecure', '--cookie-jar', '/tmp/kulala-cookies.txt', '--cookie', '/tmp/kulala-cookies.txt' },
+    },
+    config = function(_, opts)
+      require('kulala').setup(opts)
 
-      -- レスポンスの JSON を jq でフォーマットする
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'json',
+      vim.keymap.set('n', '<leader>rr', '<cmd>lua require("kulala").run()<CR>', { desc = 'Run REST request' })
+      vim.keymap.set('n', '<leader>rl', '<cmd>lua require("kulala").replay()<CR>', { desc = 'Re-run last REST request' })
+      vim.keymap.set('n', '<leader>ro', '<cmd>lua require("kulala").toggle_view()<CR>', { desc = 'Toggle REST result view' })
+
+      vim.api.nvim_create_autocmd('BufWinEnter', {
+        pattern = 'kulala://ui',
         callback = function()
-          vim.opt_local.formatprg = 'jq .'
+          vim.opt_local.foldenable = false
         end,
       })
-      -- キーマッピング
-      vim.keymap.set('n', '<leader>rr', '<cmd>Rest run<CR>', { desc = 'Run REST request' })
-      vim.keymap.set('n', '<leader>rl', '<cmd>Rest last<CR>', { desc = 'Re-run last REST request' })
-      vim.keymap.set('n', '<leader>ro', '<cmd>Rest open<CR>', { desc = 'Open REST result pane' })
+
+      local function url_decode(str)
+        return (str:gsub('+', ' '):gsub('%%(%x%x)', function(h)
+          return string.char(tonumber(h, 16))
+        end))
+      end
+
+      -- ビジュアル選択範囲をURLデコードしてその場で置換
+      vim.keymap.set('v', '<leader>rd', function()
+        local s = vim.fn.getpos("'<")
+        local e = vim.fn.getpos("'>")
+        local lines = vim.api.nvim_buf_get_text(0, s[2] - 1, s[3] - 1, e[2] - 1, e[3], {})
+        local selected = table.concat(lines, '\n')
+        local decoded = url_decode(selected)
+        vim.api.nvim_buf_set_text(0, s[2] - 1, s[3] - 1, e[2] - 1, e[3], vim.split(decoded, '\n'))
+      end, { desc = 'URL decode selected text' })
     end,
   },
 }
