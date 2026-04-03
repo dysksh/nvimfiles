@@ -15,6 +15,7 @@ return {
       filters = {
         dotfiles = false,
         exclude = { '.git', 'node_modules' },
+        custom = { "^\\.env", "\\.pem$", "\\.key$", "\\.p12$", "\\.pfx$" },
       },
       git = {
         ignore = false,

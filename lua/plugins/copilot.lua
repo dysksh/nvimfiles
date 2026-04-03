@@ -38,6 +38,9 @@ return {
        event = 'InsertEnter',
        config = function()
          require('copilot').setup({
+           filetypes = {
+             secrets = false,  -- .env・秘密鍵系を除外
+           },
            suggestion = {
              enabled = true,
              auto_trigger = true,  -- 入力中に自動で補完を表示

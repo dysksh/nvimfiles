@@ -47,3 +47,18 @@ opt.swapfile = false
 -- ヤンクをシステムクリップボードと共有する
 opt.clipboard = 'unnamedplus'
 
+-- .env 系・秘密鍵ファイルを secrets filetype に設定（Copilot 除外のため）
+vim.filetype.add({
+  filename = {
+    [".env"] = "secrets",
+  },
+  pattern = {
+    ["%.env%..+"] = "secrets",  -- .env.local, .env.native.local 等
+    [".+%.env"] = "secrets",    -- production.env 等
+    [".+%.pem"] = "secrets",
+    [".+%.key"] = "secrets",
+    [".+%.p12"] = "secrets",
+    [".+%.pfx"] = "secrets",
+  },
+})
+
