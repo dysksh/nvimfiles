@@ -4,7 +4,7 @@ return {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
-    build = "cd app && yarn install",
+    build = "cd app && bash install.sh",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
       -- ブラウザを自動で開く
